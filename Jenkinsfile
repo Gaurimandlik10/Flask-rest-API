@@ -5,8 +5,8 @@ pipeline {
         AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
         AWS_DEFAULT_REGION    = 'ap-southeast-2'
-        AWS_ACCOUNT_ID        = credentials('aws-account-id')
-        ECR_REPO              = "flask-students"
+        AWS_ACCOUNT_ID        = '500345929326'
+        ECR_REPO              = "devops_projects"
         IMAGE_TAG             = "build-${env.BUILD_NUMBER}"
         ECR_URL               = "${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-2.amazonaws.com"
     }
