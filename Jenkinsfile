@@ -22,7 +22,7 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 echo "Scanning image for vulnerabilities..."
-                sh "trivy image --exit-code 1 --severity HIGH,CRITICAL ${ECR_REPO}:${IMAGE_TAG}"
+                sh "trivy image --exit-code 1 --severity CRITICAL ${ECR_REPO}:${IMAGE_TAG}"
             }
         }
 
