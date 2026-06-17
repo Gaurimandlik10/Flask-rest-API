@@ -1,0 +1,71 @@
+# ── Base values (overridden by values-staging.yaml / values-prod.yaml) ──
+
+replicaCount: 2
+
+image:
+  repository: your-dockerhub-or-ecr/flask-students   # overridden via --set in Jenkinsfile
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+  host: flask.example.com
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+# readinessProbe hits /health - pod is Ready only after DB connects
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 5
+
+# livenessProbe deliberately does NOT hit /health - a transient DB blip
+# should make the pod un-Ready, not get it killed and restarted.
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+  initialDelaySeconds: 30
+  periodSeconds: 20
+
+# App/DB settings - consumed by configmap.yaml and secret.yaml
+appEnv: development
+
+db:
+  user: postgres
+  name: studentsdb
+  # In-cluster Postgres (StatefulSet headless service) by default.
+  # values-prod.yaml overrides this to the RDS endpoint.
+  host: postgres-headless
+  port: "5432"
+  # password is intentionally left unset here - never commit real passwords.
+  # Pass it at install time: helm upgrade --install ... --set db.password=$DB_PASSWORD
+  password: ""
+
+# Name of the ConfigMap/Secret created by this chart
+configMapName: flask-config
+secretName: db-secret
+
+# initContainer runs DB migrations before the main app starts
+initContainer:
+  enabled: true
+  command: ["python", "-c", "from app import run_migrations; run_migrations()"]

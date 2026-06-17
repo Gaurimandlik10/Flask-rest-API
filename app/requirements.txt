@@ -1,0 +1,13 @@
+# ── Web framework ──────────────────────────────
+Flask==3.0.3
+
+# ── ORM + PostgreSQL driver ────────────────────
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.30
+psycopg2-binary==2.9.9       # pure-binary wheel; no libpq-dev needed in Docker
+
+# ── WSGI server (used in staging/prod) ─────────
+gunicorn==22.0.0
+
+# ── Utilities ──────────────────────────────────
+python-dotenv==1.0.1          # loads .env in local dev (ignored in K8s)

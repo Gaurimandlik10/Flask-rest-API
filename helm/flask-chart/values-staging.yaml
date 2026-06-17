@@ -1,0 +1,31 @@
+# Staging overrides - merged on top of values.yaml
+# Deploy command:  helm upgrade --install flask-staging ./flask-chart \
+#                   -f values.yaml -f values-staging.yaml \
+#                   -n staging --create-namespace \
+#                   --set db.password=$DB_PASSWORD
+
+replicaCount: 1
+
+appEnv: staging
+
+image:
+  tag: "staging-latest"
+
+ingress:
+  host: staging.flask.example.com
+
+# db.host stays as the default "postgres-headless" (in-cluster StatefulSet)
+db:
+  user: postgres
+  name: studentsdb
+  host: postgres-headless
+  port: "5432"
+  password: ""
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+  limits:
+    cpu: "200m"
+    memory: "128Mi"
