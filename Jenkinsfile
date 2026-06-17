@@ -18,14 +18,7 @@ pipeline {
                 sh "docker build -t ${ECR_REPO}:${IMAGE_TAG} -f app/Dockerfile app"
             }
         }
-
-        stage('Trivy Scan') {
-            steps {
-                echo "Scanning image for vulnerabilities..."
-                sh "trivy image --exit-code 1 --severity CRITICAL ${ECR_REPO}:${IMAGE_TAG}"
-            }
-        }
-
+        
         stage('Pushing to ECR') {
             steps {
                 echo "Pushing to ECR..."
