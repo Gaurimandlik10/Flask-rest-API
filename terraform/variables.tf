@@ -8,6 +8,3 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "cluster_name" {
-  default = "flask-postgres-cluster"
-}
