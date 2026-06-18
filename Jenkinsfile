@@ -30,6 +30,17 @@ pipeline {
             }
         }
 
+        stage('Terraform Apply') {
+            steps {
+                withCredentials([string(credentialsId: 'prod-db-password', variable: 'TF_VAR_db_password')]) {
+                    sh """
+                        cd terraform
+                        terraform init
+                        terraform apply -auto-approve
+                    """
+                }
+            }
+        }
           stage('Configure Kubeconfig') {
             steps {
                 echo "Updating kubeconfig for EKS access..."
@@ -65,18 +76,6 @@ pipeline {
         stage('Approve Prod Deploy') {
             steps {
                 input message: 'Staging looks good. Deploy to PRODUCTION?', ok: 'Yes, Deploy'
-            }
-        }
-
-        stage('Terraform Apply (RDS for Prod)') {
-            steps {
-                withCredentials([string(credentialsId: 'prod-db-password', variable: 'TF_VAR_db_password')]) {
-                    sh """
-                        cd terraform
-                        terraform init
-                        terraform apply -auto-approve
-                    """
-                }
             }
         }
 
