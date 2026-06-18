@@ -10,7 +10,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "devops-project"  
+    bucket = "devopsprojectsgauri"  
     key    = "flaskrestapi/terraform.tfstate"
     region = "ap-southeast-2"
   }
