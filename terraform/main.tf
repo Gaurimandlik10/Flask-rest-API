@@ -10,7 +10,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "REPLACE-WITH-YOUR-REAL-S3-BUCKET-NAME"   # TODO: set before `terraform init`
+    bucket = "devops-project"  
     key    = "flaskrestapi/terraform.tfstate"
     region = "ap-southeast-2"
   }
