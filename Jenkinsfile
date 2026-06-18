@@ -33,7 +33,7 @@ pipeline {
           stage('Configure Kubeconfig') {
             steps {
                 echo "Updating kubeconfig for EKS access..."
-                sh "aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_DEFAULT_REGION}"
+                sh "aws eks update-kubeconfig --name flask-postgres-cluster --region ${AWS_DEFAULT_REGION}"
             }
         }
  
