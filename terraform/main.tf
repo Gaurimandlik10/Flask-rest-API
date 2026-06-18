@@ -79,7 +79,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name    = var.cluster_name
+  cluster_name    = "flask-postgres-cluster"
   cluster_version = "1.32"
 
   vpc_id     = aws_vpc.proj4_vpc.id
