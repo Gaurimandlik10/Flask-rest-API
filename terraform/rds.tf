@@ -32,8 +32,8 @@ resource "aws_db_subnet_group" "main" {
 resource "aws_db_instance" "postgres" {
   identifier     = "flask-postgres-db"
   engine         = "postgres"
-  engine_version = "15.3"
-  instance_class = "db.t3.micro"
+  engine_version = "16.3"
+  instance_class = "db.c7i-flex.large"
   allocated_storage = 20
 
   db_name  = "flaskdb"
@@ -43,10 +43,12 @@ resource "aws_db_instance" "postgres" {
   db_subnet_group_name  = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
+  storage_type           = "gp2"     
+  multi_az = false
   skip_final_snapshot = true
   publicly_accessible = false
-
-  backup_retention_period = 7
+  max_allocated_storage  = 0
+  backup_retention_period = 0
   deletion_protection     = false
 
   tags = {
