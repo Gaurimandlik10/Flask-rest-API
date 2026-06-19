@@ -48,21 +48,21 @@ pipeline {
             }
         }
  
-        stage('Deploy to Staging') {
-            steps {
-                withCredentials([string(credentialsId: 'staging-db-password', variable: 'DB_PASSWORD')]) {
-                    sh(script: '''
-                        helm upgrade --install flask-staging ./helm/flask-chart \
-                            -f ./helm/flask-chart/values.yaml \
-                            -f ./helm/flask-chart/values-staging.yaml \
-                            -n staging --create-namespace \
-                            --set image.repository=$IMAGE_REPO \
-                            --set image.tag=$IMAGE_TAG \
-                            --set db.password=$DB_PASSWORD
-                    ''')
-                }
-            }
+       stage('Deploy to Staging') {
+    steps {
+        withCredentials([string(credentialsId: 'staging-db-password', variable: 'DB_PASSWORD')]) {
+            sh """
+                helm upgrade --install flask-staging ./helm/flask-chart \
+                    -f ./helm/flask-chart/values.yaml \
+                    -f ./helm/flask-chart/values-staging.yaml \
+                    -n staging --create-namespace \
+                    --set image.repository=${ECR_URL}/${ECR_REPO} \
+                    --set image.tag=${IMAGE_TAG} \
+                    --set db.password=${DB_PASSWORD}
+            """
         }
+    }
+}
 
         stage('Verify Staging') {
             steps {
