@@ -59,7 +59,7 @@ pipeline {
                             --set image.repository=$IMAGE_REPO \
                             --set image.tag=$IMAGE_TAG \
                             --set db.password=$DB_PASSWORD
-                    ''', returnStatus: false)
+                    ''')
                 }
             }
         }
@@ -67,7 +67,7 @@ pipeline {
         stage('Verify Staging') {
             steps {
                 sh """
-                    kubectl rollout status deployment/flask-staging-flaskrestapi -n staging --timeout=120s
+                    kubectl rollout status deployment/flask-staging-flaskrestapi -n staging --timeout=300s
                     kubectl get pods -n staging
                 """
             }
@@ -105,7 +105,7 @@ pipeline {
         stage('Verify Prod') {
             steps {
                 sh """
-                    kubectl rollout status deployment/flask-prod-flaskrestapi -n prod --timeout=120s
+                    kubectl rollout status deployment/flask-prod-flaskrestapi -n prod --timeout=300s
                     kubectl get pods -n prod
                 """
             }
