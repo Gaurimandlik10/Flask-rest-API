@@ -33,7 +33,7 @@ resource "aws_db_instance" "postgres" {
   identifier     = "flask-postgres-db"
   engine         = "postgres"
   engine_version = "16.3"
-  instance_class = "db.c7i-flex.large"
+  instance_class = "db.t3.micro"
   allocated_storage = 20
 
   db_name  = "flaskdb"
