@@ -18,29 +18,29 @@ spec:
     spec:
       {{- if .Values.initContainer.enabled }}
       initContainers:
+
       - name: wait-for-db
         image: busybox
         command:
         - sh
         - -c
         - |
-          until nc -z postgres-service 5432; do
-            echo "Waiting for PostgreSQL..."
+          echo "Waiting for PostgreSQL at {{ .Values.db.host }}:{{ .Values.db.port }}..."
+          until nc -z {{ .Values.db.host }} {{ .Values.db.port }}; do
+            echo "PostgreSQL not ready yet... waiting 3 seconds"
             sleep 3
           done
-          echo "PostgreSQL is ready!"
+          echo "PostgreSQL is ready! Starting migrations..."
 
       - name: db-migrate
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command:
-        - python
-        - -c
-        - "from app import run_migrations; run_migrations()"
+        command: {{ toJson .Values.initContainer.migrateCommand }}
         envFrom:
         - configMapRef:
-            name: flask-config
+            name: {{ .Values.configMapName }}
         - secretRef:
-            name: db-secret
+            name: {{ .Values.secretName }}
+
       {{- end }}
 
       containers:
