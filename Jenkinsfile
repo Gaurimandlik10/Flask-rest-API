@@ -63,7 +63,23 @@ pipeline {
         }
     }
 }
+        stage('Debug Staging') {
+         steps {
+             sh """
+             echo "=== Pod Status ==="
+             kubectl get pods -n staging
 
+             echo "=== Pod Description ==="
+             kubectl describe pods -n staging
+
+             echo "=== Pod Logs ==="
+             kubectl logs -l app.kubernetes.io/name=flaskrestapi -n staging --tail=50 || true
+
+             echo "=== Events ==="
+             kubectl get events -n staging --sort-by='.lastTimestamp'
+           """
+        }
+     }
         stage('Verify Staging') {
             steps {
                 sh """
