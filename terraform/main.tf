@@ -110,13 +110,3 @@ resource "kubernetes_namespace" "namespaces" {
 
   depends_on = [module.eks]
 }
-
-# In your eks.tf or main.tf
-resource "aws_eks_addon" "ebs_csi" {
-  cluster_name = module.eks.cluster_name
-  addon_name   = "aws-ebs-csi-driver"
-
-  depends_on = [
-    module.eks.eks_managed_node_groups
-  ]
-}
