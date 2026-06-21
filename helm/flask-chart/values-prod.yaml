@@ -1,31 +1,21 @@
-# Prod overrides - merged on top of values.yaml
-# Deploy command:  helm upgrade --install flask-prod ./flask-chart \
-#                   -f values.yaml -f values-prod.yaml \
-#                   -n prod --create-namespace \
-#                   --set db.password=$DB_PASSWORD \
-#                   --set db.host=$(terraform -chdir=terraform output -raw rds_endpoint)
-
-replicaCount: 3
-
-image:
-  tag: "prod-latest"
+replicaCount: 2         # two pods in prod
 
 appEnv: production
 
 db:
-  user: postgres
-  name: flaskdb           # must match aws_db_instance.postgres.db_name in terraform/rds.tf
-  host: <your-rds-endpoint-from-terraform-output>   # overridden via --set at deploy time
+  host: ""              # passed via --set from terraform output
   port: "5432"
-  password: ""
+  name: "flaskdb"
+  user: "postgres"
+  password: ""          # passed via --set
 
 ingress:
-  host: flask.example.com
+  enabled: true
 
 resources:
   requests:
-    cpu: "200m"
-    memory: "256Mi"
+    cpu: "100m"
+    memory: "128Mi"
   limits:
-    cpu: "1000m"
-    memory: "512Mi"
+    cpu: "500m"
+    memory: "256Mi"
