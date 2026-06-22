@@ -80,15 +80,31 @@ pipeline {
            """
         }
      }
-        stage('Verify Staging') {
-            steps {
-                sh """
-                    kubectl rollout status deployment/flask-staging-flaskrestapi -n staging --timeout=300s
-                    kubectl get pods -n staging
-                """
-            }
-        }
+      stage('Cleanup Old Pods') {
+         steps {
+           sh '''
+              # Force delete any terminating pods
+                kubectl get pods -n staging \
+                --field-selector=status.phase=Failed \
+                -o name | xargs kubectl delete -n staging \
+                --force --grace-period=0 || true
 
+             # Wait for cleanup
+               sleep 10
+            '''
+       }
+   }
+
+   stage('Verify Staging') {
+    steps {
+        sh """
+            kubectl rollout status \
+              deployment/flask-staging-flaskrestapi \
+              -n staging --timeout=300s
+            kubectl get pods -n staging
+        """
+    }
+}
         stage('Approve Prod Deploy') {
             steps {
                 input message: 'Staging looks good. Deploy to PRODUCTION?', ok: 'Yes, Deploy'
